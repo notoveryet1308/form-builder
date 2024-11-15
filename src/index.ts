@@ -2,7 +2,7 @@ import express, { Request, Response, Application } from "express";
 import dotenv from "dotenv";
 
 import makeConnectionWithDatabase from "./db";
-import registeApiEndpoints from "./routes";
+import registerApiEndpoints from "./routes";
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send({ status: "200", message: "hello from form-builder" });
 });
 
-registeApiEndpoints(app);
+registerApiEndpoints(app);
 
 makeConnectionWithDatabase();
 
