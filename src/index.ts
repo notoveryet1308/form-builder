@@ -2,7 +2,7 @@ import express, { Request, Response, Application } from "express";
 import dotenv from "dotenv";
 
 import makeConnectionWithDatabase from "./db";
-import registerApiEndpoints from "./routes";
+import authRoute from "./routes/auth";
 
 dotenv.config();
 
@@ -12,11 +12,7 @@ const app: Application = express();
 
 app.use(express.json());
 
-app.get("/", (req: Request, res: Response) => {
-  res.send({ status: "200", message: "hello from form-builder" });
-});
-
-registerApiEndpoints(app);
+app.use(authRoute);
 
 makeConnectionWithDatabase();
 

@@ -1,18 +1,17 @@
-import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
+
+import { drizzle } from "drizzle-orm/neon-http";
 
 dotenv.config();
 
 const DB_URL = process.env.DATABASE_URL || "";
 
-export const sequelize = new Sequelize(DB_URL, {
-  logging: console.log,
-});
+export const db = drizzle(DB_URL, { casing: "snake_case" });
 
 const makeConnectionWithDatabase = async () => {
   try {
-    await sequelize.authenticate();
-    console.log("Connection has been established successfully.");
+    await db.execute("select 1");
+    console.log("Database connection successful");
   } catch (error) {
     console.error("Unable to connect to the database:", error);
   }

@@ -1,26 +1,38 @@
 import { Request, Response } from "express";
-import User from "../../models/user";
+import { Users } from "../../schema/users";
+import { db } from "../../db";
+import { eq } from "drizzle-orm";
 
-const registerController = async (req: Request, res: Response) => {
-  const { firstName, lastName, email, middleName } = req.body;
+import { HttpError, withTryCatch } from "../../middleware/error/withTryCatch";
+import { ApiResponse } from "../../middleware/error/types";
 
-  try {
-    // Check if user already exists
-    const existingUser = await User.findOne({ where: { email } });
-    console.log({existingUser});
-    // if (existingUser) {
-    //   return res.status(400).json({ error: "Email already registered" });
-    // }
+const registerUser = withTryCatch(
+  async (req: Request): Promise<ApiResponse<{ id: number }>> => {
+    const { username, email, password, firstName, lastName } = req.body;
 
-    // Create new user
-    // const newUser = await User.create({firstName, lastName, email, middleName });
+    const existingUser = await db
+      .select()
+      .from(Users)
+      .where(eq(Users.email, email));
 
-    // Return the new user
-    // res.status(201).json(newUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to register user" });
-  }
-};
+    if (!existingUser) {
+      throw new HttpError(404, "Email is already registered", "USER_EXITS");
+    }
 
-export { registerController };
+    const [newUser] = await db
+      .insert(Users)
+      .values({
+        username,
+        email,
+        password,
+        firstName,
+        lastName,
+      })
+      .returning({ id: Users.id });
+
+    return { data: newUser, statusCode: 201, success: true };
+  },
+  201
+);
+
+export { registerUser };

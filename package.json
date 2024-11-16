@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "db:migrate": "npx tsx ./src/migrations/index.ts",
+    "db:generate": "drizzle-kit generate --dialect=postgresql --schema=src/schema --out=./drizzle"
   },
   "keywords": [],
   "author": "",
@@ -15,14 +17,18 @@
     "@neondatabase/serverless": "^0.10.3",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.36.3",
     "express": "^4.21.1",
+    "neonctl": "^2.4.0",
     "paseto": "^3.1.4",
     "pg": "^8.13.1",
-    "sequelize": "^6.37.5"
+    "pg-hstore": "^2.3.4"
+
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^22.9.0",
+    "drizzle-kit": "^0.28.1",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
