@@ -29,9 +29,8 @@ export const Users = table(
   "Users",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    username: varchar("username", { length: 255 }).notNull().unique(),
     email: varchar("email", { length: 255 }).notNull().unique(),
-    password: varchar("password", { length: 255 }).notNull(), // Hashed password
+    password: varchar("password", { length: 255 }).notNull(),
 
     // Personal information
     firstName: varchar("first_name", { length: 255 }).notNull(),
