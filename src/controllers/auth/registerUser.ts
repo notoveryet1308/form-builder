@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
-import { Users } from "../../schema/users";
-import { db } from "../../db";
 import { eq } from "drizzle-orm";
+import { Request } from "express";
+import { db } from "../../db";
+import { Users } from "../../schema/users";
 
-import { HttpError, withTryCatch } from "../../middleware/error/withTryCatch";
 import { ApiResponse } from "../../middleware/error/types";
-import { hashPassword } from "../../utils/auth";
+import { HttpError, withTryCatch } from "../../middleware/error/withTryCatch";
+import { hashPassword } from "../../utils/auth/passwordHash";
 
 const registerUser = withTryCatch(
   async (req: Request): Promise<ApiResponse<{ id: number }>> => {
@@ -36,4 +36,4 @@ const registerUser = withTryCatch(
   201
 );
 
-export { registerUser };
+export default registerUser;

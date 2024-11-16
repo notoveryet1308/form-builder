@@ -24,6 +24,38 @@ export const userRoleEnum = Enum("roles", [
   "GUEST",
 ]);
 
+export type UserStatus = "ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING";
+export type UserRole = "ADMIN" | "USER" | "MODERATOR" | "GUEST";
+
+export type UserType = {
+  id: number;
+  email: string;
+  password: string;
+
+  // Personal information
+  firstName: string;
+  lastName: string;
+  phoneNumber: string | null;
+  dateOfBirth: Date | null;
+  avatar: string | null;
+
+  // Account status and verification
+  status: UserStatus;
+  role: UserRole;
+  emailVerified: boolean;
+  phoneVerified: boolean;
+  twoFactorEnabled: boolean;
+
+  // Metadata
+  lastLoginAt: Date | null;
+  lastLoginIp: string | null;
+  failedLoginAttempts: number;
+
+  // Timestamps
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+};
 // Users table
 export const Users = table(
   "Users",

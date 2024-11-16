@@ -11,8 +11,17 @@ const publicKey = process.env.PUBLIC_KEY || "defaultPublicKey";
 const privateKeyObject = crypto.createPrivateKey(privateKey);
 const publicKeyObject = crypto.createPublicKey(publicKey);
 
-export const produceToken = async (data: PasetoPayloadType) => {
-  const token = await sign(data, privateKeyObject);
+export const produceToken = async ({
+  data,
+  expiresIn,
+}: {
+  data: PasetoPayloadType;
+  isRefreshToken: boolean;
+  expiresIn: string;
+}) => {
+  const token = await sign(data, privateKeyObject, {
+    expiresIn,
+  });
   return token;
 };
 
@@ -25,3 +34,4 @@ const consumeToken = async ({
 };
 
 export default { produceToken, consumeToken };
+
