@@ -1,11 +1,12 @@
 import { randomBytes } from "crypto";
 import { V4 } from "paseto";
 import {
+  GeneratePayloadArgs,
   TokenPayloadType,
   TokenType,
-  GeneratePayloadArgs,
   UserPayloadType,
 } from "./types";
+import { HttpError } from "../../middleware/error/withTryCatch";
 
 const { sign, verify } = V4;
 
@@ -64,18 +65,22 @@ class PasetoTokenManager {
       // Check expiration
       const exp = new Date(decoded?.exp);
       if (exp <= new Date()) {
-        throw new Error("Token has expired");
+        throw new HttpError(403, "ACCESS_DENIED");
       }
 
       return decoded;
     } catch (error: any) {
-      throw new Error(`Token verification failed: ${error.message}`);
+      throw new HttpError(403, "ACCESS_DENIED");
     }
   }
 
-  async refreshAccessToken(refreshToken: string) {
+  async refreshAccessToken({
+    previousRefreshToken,
+  }: {
+    previousRefreshToken: string;
+  }) {
     try {
-      const decoded = await this.verifyToken(refreshToken);
+      const decoded = await this.verifyToken(previousRefreshToken);
 
       // Verify it's a refresh token
       if (decoded.type !== "refresh") {
@@ -84,7 +89,13 @@ class PasetoTokenManager {
 
       // Generate new token pair
       const { userId, email } = decoded;
-      return await this.generateTokenPair({ userId, email });
+
+      const { refreshToken, accessToken } = await this.generateTokenPair({
+        userId,
+        email,
+      });
+
+      return { refreshToken, accessToken, userId, email };
     } catch (error: any) {
       throw new Error(`Token refresh failed: ${error.message}`);
     }
@@ -131,4 +142,6 @@ class PasetoTokenManager {
   }
 }
 
-export default new PasetoTokenManager();
+const tokenManager = new PasetoTokenManager();
+
+export default tokenManager;

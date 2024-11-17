@@ -4,34 +4,26 @@ import { Request, Response } from "express";
 import { db } from "../../db";
 import { Users, UserType } from "../../schema/users";
 
-import { ApiResponse } from "../../middleware/error/types";
+import { SuccessResponse } from "../../middleware/error/types";
 import { HttpError, withTryCatch } from "../../middleware/error/withTryCatch";
 import { verifyPassword } from "../../utils/auth/passwordHash";
 import pasetoToken from "../../utils/auth/PasetoTokenManager";
+import { setRefreshTokenInCookie, verifyUserExits } from "./utils";
 
 const loginUser = withTryCatch(
   async (
     req: Request,
     res: Response
-  ): Promise<ApiResponse<{ token: string; me: UserType }>> => {
+  ): Promise<SuccessResponse<{ token: string; me: UserType }>> => {
     const { email, password } = req.body;
 
-    const [me] = await db.select().from(Users).where(eq(Users.email, email));
-
-    if (!me) {
-      throw new HttpError(
-        404,
-        "Either email or password is incorrect",
-        "WRONG_CREDENTIAL"
-      );
-    }
-
-    const isCorrectPassword = await verifyPassword({
+    const me = await verifyUserExits({ email });
+    const confirmPassword = await verifyPassword({
       plainPassword: password,
       hashedPassword: me.password,
     });
 
-    if (!isCorrectPassword) {
+    if (!confirmPassword) {
       throw new HttpError(
         404,
         "Either email or password is incorrect",
@@ -44,12 +36,7 @@ const loginUser = withTryCatch(
       userId: me.id,
     });
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      maxAge: 15 * 24 * 60 * 60 * 1000,
-    });
+    setRefreshTokenInCookie({ res, refreshToken });
 
     return {
       data: { token: accessToken, me },
