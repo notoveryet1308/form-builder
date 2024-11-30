@@ -1,5 +1,5 @@
 {
-  "id": "74fdbe0a-53af-4677-9cce-88a36674a5d3",
+  "id": "130b86c4-a278-4bf8-ac67-ed619f532271",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -25,12 +25,6 @@
             "cycle": false
           }
         },
-        "username": {
-          "name": "username",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
         "email": {
           "name": "email",
           "type": "varchar(255)",
@@ -55,12 +49,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "display_name": {
-          "name": "display_name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
         "phone_number": {
           "name": "phone_number",
           "type": "varchar(50)",
@@ -78,22 +66,6 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
-        },
-        "status": {
-          "name": "status",
-          "type": "status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'PENDING'"
-        },
-        "role": {
-          "name": "role",
-          "type": "roles",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'USER'"
         },
         "email_verified": {
           "name": "email_verified",
@@ -119,12 +91,6 @@
         "last_login_at": {
           "name": "last_login_at",
           "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "last_login_ip": {
-          "name": "last_login_ip",
-          "type": "varchar(45)",
           "primaryKey": false,
           "notNull": false
         },
@@ -176,13 +142,6 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "Users_username_unique": {
-          "name": "Users_username_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
-        },
         "Users_email_unique": {
           "name": "Users_email_unique",
           "nullsNotDistinct": false,
@@ -196,28 +155,7 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {
-    "public.roles": {
-      "name": "roles",
-      "schema": "public",
-      "values": [
-        "ADMIN",
-        "USER",
-        "MODERATOR",
-        "GUEST"
-      ]
-    },
-    "public.status": {
-      "name": "status",
-      "schema": "public",
-      "values": [
-        "ACTIVE",
-        "INACTIVE",
-        "SUSPENDED",
-        "PENDING"
-      ]
-    }
-  },
+  "enums": {},
   "schemas": {},
   "sequences": {},
   "roles": {},

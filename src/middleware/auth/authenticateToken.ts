@@ -1,12 +1,16 @@
 import { Request, Response, NextFunction } from "express";
+
 import tokenManager from "../../utils/auth/PasetoTokenManager";
 import { HttpError } from "../error/withTryCatch";
 import { clearRefreshTokenFromCookie } from "../../controllers/auth/utils";
+import { ExpModRequest } from "../../types";
 
 enum SKIP_TOKEN_VERIFICATION_ROUTE_LIST {
   LOGIN = "/api/login",
   REGISTER = "/api/register",
 }
+
+const LOGOUT = "/api/logout";
 
 const skipTokenVerification = {
   [SKIP_TOKEN_VERIFICATION_ROUTE_LIST.LOGIN]: true,
@@ -21,6 +25,11 @@ const authenticateToken = async (
   if (!!skipTokenVerification[req.url as SKIP_TOKEN_VERIFICATION_ROUTE_LIST]) {
     return next();
   }
+  if (req.url === LOGOUT) {
+    (req as ExpModRequest).user = undefined;
+    clearRefreshTokenFromCookie(res);
+    return next();
+  }
   const { refreshToken } = req.cookies;
   const accessToken = req.headers.authorization?.split(" ")[1] || null;
 
@@ -29,10 +38,14 @@ const authenticateToken = async (
       throw new HttpError(400, "Token not found", "TOKEN_MISSING");
     }
 
-    await Promise.all([
+    const [{ userId, email }] = await Promise.all([
       tokenManager.verifyToken(refreshToken),
       tokenManager.verifyToken(accessToken),
     ]);
+    (req as ExpModRequest).user = {
+      userId,
+      email,
+    };
     next();
   } catch (error: any) {
     clearRefreshTokenFromCookie(res);

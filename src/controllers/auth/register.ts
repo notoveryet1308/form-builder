@@ -6,9 +6,15 @@ import { Users } from "../../schema/users";
 import { ApiResponse } from "../../middleware/error/types";
 import { HttpError, withTryCatch } from "../../middleware/error/withTryCatch";
 import { hashPassword } from "../../utils/auth/passwordHash";
+import {
+  registerUserDataType,
+  registerUserDataValidation,
+} from "./utils/validation/registerUser";
 
 const registerUser = withTryCatch(
   async (req: Request): Promise<ApiResponse<{ id: number }>> => {
+    registerUserDataValidation(req.body as registerUserDataType);
+
     const { email, password, firstName, lastName } = req.body;
 
     const existingUser = await db

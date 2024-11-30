@@ -26,7 +26,8 @@
     "neonctl": "^2.4.0",
     "paseto": "^3.1.4",
     "pg": "^8.13.1",
-    "pg-hstore": "^2.3.4"
+    "pg-hstore": "^2.3.4",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.7",

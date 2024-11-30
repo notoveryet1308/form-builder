@@ -1,13 +1,11 @@
 import { eq } from "drizzle-orm";
-import { Request, Response } from "express";
+import { Response } from "express";
 
-import { db } from "../../db";
-import { Users, UserType } from "../../schema/users";
+import { db } from "../../../db";
+import { UserType } from "../../../schema/types/user";
+import { Users } from "../../../schema/users";
 
-import { SuccessResponse } from "../../middleware/error/types";
-import { HttpError, withTryCatch } from "../../middleware/error/withTryCatch";
-import { verifyPassword } from "../../utils/auth/passwordHash";
-import pasetoToken from "../../utils/auth/PasetoTokenManager";
+import { HttpError } from "../../../middleware/error/withTryCatch";
 
 export const verifyUserExits = async ({
   email,

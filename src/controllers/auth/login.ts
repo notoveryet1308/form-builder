@@ -1,20 +1,20 @@
-import { eq } from "drizzle-orm";
 import { Request, Response } from "express";
 
-import { db } from "../../db";
-import { Users, UserType } from "../../schema/users";
+import { UserType } from "../../schema/types/user";
 
 import { SuccessResponse } from "../../middleware/error/types";
 import { HttpError, withTryCatch } from "../../middleware/error/withTryCatch";
-import { verifyPassword } from "../../utils/auth/passwordHash";
 import pasetoToken from "../../utils/auth/PasetoTokenManager";
+import { verifyPassword } from "../../utils/auth/passwordHash";
 import { setRefreshTokenInCookie, verifyUserExits } from "./utils";
+import { loginUserDataValidation } from "./utils/validation/loginUser";
 
 const loginUser = withTryCatch(
   async (
     req: Request,
     res: Response
   ): Promise<SuccessResponse<{ token: string; me: UserType }>> => {
+    loginUserDataValidation(req.body);
     const { email, password } = req.body;
 
     const me = await verifyUserExits({ email });
