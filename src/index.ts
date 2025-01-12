@@ -6,10 +6,12 @@ import morgan from "morgan";
 import makeConnectionWithDatabase from "./db";
 import authenticateToken from "./middleware/auth/authenticateToken";
 import authRoute from "./routes/auth";
+import formRoute from "./routes/form";
+import submitForm from "./routes/formSubmission";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 2023;
+const PORT = process.env.PORT ?? 2023;
 
 const app: Application = express();
 
@@ -21,6 +23,8 @@ app.use(
 );
 
 app.use(authRoute);
+app.use(formRoute);
+app.use(submitForm);
 
 makeConnectionWithDatabase();
 

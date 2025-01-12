@@ -14,11 +14,11 @@ const privateKey = process.env.PRIVATE_KEY || "defaultPrivateKey";
 const publicKey = process.env.PUBLIC_KEY || "defaultPublicKey";
 
 class PasetoTokenManager {
-  #accessTokenExpiration;
-  #refreshTokenExpiration;
+  readonly #accessTokenExpiration;
+  readonly #refreshTokenExpiration;
 
   constructor() {
-    this.#accessTokenExpiration = "15m";
+    this.#accessTokenExpiration = "1d";
     this.#refreshTokenExpiration = "7d";
   }
 

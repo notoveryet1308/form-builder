@@ -3,7 +3,7 @@ import { Response } from "express";
 
 import { db } from "../../../db";
 import { UserType } from "../../../schema/types/user";
-import { Users } from "../../../schema/users";
+import { User } from "../../../schema/User";
 
 import { HttpError } from "../../../middleware/error/withTryCatch";
 
@@ -12,7 +12,7 @@ export const verifyUserExits = async ({
 }: {
   email: string;
 }): Promise<UserType> => {
-  const [me] = await db.select().from(Users).where(eq(Users.email, email));
+  const [me] = await db.select().from(User).where(eq(User.email, email));
 
   if (!me) {
     throw new HttpError(

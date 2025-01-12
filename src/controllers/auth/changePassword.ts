@@ -4,7 +4,7 @@ import { HttpError, withTryCatch } from "../../middleware/error/withTryCatch";
 import { verifyUserExits } from "./utils";
 import { hashPassword, verifyPassword } from "../../utils/auth/passwordHash";
 import { db } from "../../db";
-import { Users } from "../../schema/users";
+import { User } from "../../schema/User";
 import { eq } from "drizzle-orm";
 import { SuccessResponse } from "../../middleware/error/types";
 import { ExpModRequest } from "../../types";
@@ -32,10 +32,10 @@ const changePassword = withTryCatch(
     }
     const hashedPassword = await hashPassword(newPassword);
     const [updated] = await db
-      .update(Users)
+      .update(User)
       .set({ password: hashedPassword })
-      .where(eq(Users.email, email))
-      .returning({ email: Users.email });
+      .where(eq(User.email, email))
+      .returning({ email: User.email });
     console.log({ updated });
 
     if (!updated.email) {

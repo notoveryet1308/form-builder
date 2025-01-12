@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { Request } from "express";
 import { db } from "../../db";
-import { Users } from "../../schema/users";
+import { User } from "../../schema/User";
 
 import { ApiResponse } from "../../middleware/error/types";
 import { HttpError, withTryCatch } from "../../middleware/error/withTryCatch";
@@ -19,8 +19,8 @@ const registerUser = withTryCatch(
 
     const existingUser = await db
       .select()
-      .from(Users)
-      .where(eq(Users.email, email));
+      .from(User)
+      .where(eq(User.email, email));
 
     if (!existingUser) {
       throw new HttpError(404, "Email is already registered", "USER_EXITS");
@@ -28,14 +28,14 @@ const registerUser = withTryCatch(
     const hashedPassword = await hashPassword(password);
 
     const [newUser] = await db
-      .insert(Users)
+      .insert(User)
       .values({
         email,
         firstName,
         lastName,
         password: hashedPassword,
       })
-      .returning({ id: Users.id });
+      .returning({ id: User.id });
 
     return { data: newUser, statusCode: 201, success: true };
   },

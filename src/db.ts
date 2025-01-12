@@ -4,7 +4,7 @@ import { drizzle } from "drizzle-orm/neon-http";
 
 dotenv.config();
 
-const DB_URL = process.env.DATABASE_URL || "";
+const DB_URL = process.env.DATABASE_URL ?? "";
 
 export const db = drizzle(DB_URL, { casing: "snake_case" });
 

@@ -1,6 +1,5 @@
 import {
   boolean,
-  pgEnum as Enum,
   integer,
   pgTable as table,
   text,
@@ -9,8 +8,8 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-export const Users = table(
-  "Users",
+export const User = table(
+  "user",
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     email: varchar("email", { length: 255 }).notNull().unique(),
@@ -29,9 +28,5 @@ export const Users = table(
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
     deletedAt: timestamp("deleted_at"),
   },
-  (table) => {
-    return {
-      emailIndex: uniqueIndex("email_idx").on(table.email),
-    };
-  }
+  (table) => [uniqueIndex("email_idx").on(table.email)]
 );
